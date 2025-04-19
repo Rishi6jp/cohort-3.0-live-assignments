@@ -1,0 +1,23 @@
+<body>
+    <input type="text"></input>
+    <button onclick="addItem()">Add me</button>
+</body>
+<script>
+    function addItem() {
+        const inpValue = document.querySelector("input");
+        const divEl = document.createElement("div");
+        const h3 = document.createElement("h3");
+        h3.innerHTML = inpValue.value;
+        const buttonDel = document.createElement("button");
+        buttonDel.setAttribute("onclick", "deleteItem()");
+        buttonDel.innerHTML = "X";
+        divEl.appendChild(h3);
+        divEl.appendChild(buttonDel);
+        document.querySelector("body").appendChild(divEl);
+    }
+    function deleteItem() {
+        console.log("delete");
+        
+    }
+
+</script>
