@@ -1,19 +1,25 @@
-const { Command } = require('commander');
-const program = new Command();
+
+const { Command } = require('commander')
+const program = new Command
+const fs = require('fs')
 
 program
-  .name('string-util')
-  .description('CLI to some JavaScript string utilities')
-  .version('0.8.0');
+  .name("count")
+  .description("A simple cli took built for me")
+  .version("1.0.0")
 
-program.command('wordz')
-  .description('Split a string into substrings and display as an array')
-  .argument('<number>', 'No of words')
-  .option('--first', 'display just the first substring')
-  .option('-w, --word <char>', 'separator character', ' ')
-  .action((str, options) => {
-    const limit = options.first ? 1 : undefined;
-    console.log(str.split(options.separator, limit));
-  });
+program.command('count')
+  .description('Count the number of words in a file')
+  .argument('<file>', 'file to count')
+  .action((file) => {
+    fs.readFile(file, "utf8",(err, data) => {
+      if(err){
+        console.log(err)
+      } else {
+        const words = data.split(" ").length
+        console.log(`There are ${words} words in a file ${file}`)
+      }
+    } )
+  })
 
 program.parse();
