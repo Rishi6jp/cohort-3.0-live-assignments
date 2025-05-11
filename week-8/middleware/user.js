@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 function userMiddleware(req, res , next) {
     const token = req.headers.authorization;
 
-    const response = jwt.verify(token, JWT_SECRET);
+    const response = jwt.verify(token, process.env.JWT_USER_SECRET);
 
     if(response){
         req.userId = response.indexOf;

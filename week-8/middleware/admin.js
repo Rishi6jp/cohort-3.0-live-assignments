@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-function adminMiddlewear() {
+function adminMiddleware() {
     const token = req.headers.authorization
     const decoded = jwt.verify(token, JWT_ADMIN_SECRET)
 
@@ -15,5 +15,5 @@ function adminMiddlewear() {
 }
 
 module.exports = {
-    adminMiddlewear: adminMiddlewear
+    adminMiddleware: adminMiddleware
 }

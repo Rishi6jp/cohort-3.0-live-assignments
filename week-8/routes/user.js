@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 const { error } = require('console');
 const userRouter = Router();
 const jwt = require('jsonwebtoken');
-const JWT_USER_SECRET = "adf9714qfasdf9q72346234";
 
 
 userRouter.post('/signup', async (req, res) => {
@@ -75,7 +74,7 @@ userRouter.post('/signin', async (req, res) => {
         if(isPasswordCorrect){
             const token = jwt.sign({
                 id: user._id
-            }, JWT_USER_SECRET)
+            }, process.env.JWT_USER_SECRET)
             
             // do a cookie logic
 

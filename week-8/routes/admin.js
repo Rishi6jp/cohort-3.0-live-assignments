@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const { Router } = require('express');
-const { AdminModel, CourseModel } = require('../db')
+const { AdminModel, CourseModel } = require('../db');
+const { adminMiddleware } = require('../middleware/admin');
 
 const adminRouter = Router();
 
@@ -74,7 +75,7 @@ adminRouter.post('/signin', async (req, res) => {
         if(isPasswordCorrect){
             const token = jwt.sign({
                 id: user._id
-            }, JWT_ADMIN_SECRET)
+            }, process.env.JWT_ADMIN_SECRET)
             
             // do a cookie logic
 
@@ -109,13 +110,56 @@ adminRouter.post('/course', async (req, res) => {
         price: price,
         creatorId: adminId
     })
+
+    res.json({
+        message: "Course Created",
+        courseId: course._id
+    })
 });
     
+adminRouter.put('/course',adminMiddleware,  async (req, res) => {
+    const adminId = req.userId;
+
+    const { title, description, imageUrl, price, courseId} = req.body;
+
+    const course = await CourseModel.update({
+        _id: courseId,
+        creatorId: adminId
+    },{
+        name: title, 
+        detail: description,
+        imageUrl: imageUrl,
+        price: price,
+        creatorId: adminId
+    })
+
+    res.json({
+        message: "Course Updated",
+        courseId: course._id
+    })
+});
+
 adminRouter.delete('/course', (req, res) => {});
 
-adminRouter.put('/course', (req, res) => {});
+adminRouter.get('/course/bulk', adminMiddleware, async (req, res) => {
+    const adminId = req.userId
 
-adminRouter.get('/course/bulk', (req, res) => {})
+    const course = await CourseModel.find({
+        _id: courseId,
+        creatorId: adminId
+    },{
+        name: title, 
+        detail: description,
+        imageUrl: imageUrl,
+        price: price,
+        creatorId: adminId
+    })
+
+    res.json({
+        message: "Course Updated",
+        courseId: course._id
+    })
+})
 
 module.exports = {
     adminRouter: adminRouter
