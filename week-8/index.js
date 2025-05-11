@@ -18,7 +18,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/course', courseRouter);
 
 async function main(){
-    await mongoose.connect("mongodb+srv://rainbro187:W9a8YWpbVHaevO1W@todocluster.pvnsdnd.mongodb.net/?retryWrites=true&w=majority&appName=todoCluster").then(() => console.log("MongoDB Connected")).catch((err) => console.error("MongoDb Not Connected"))
+    await mongoose.connect("").then(() => console.log("MongoDB Connected")).catch((err) => console.error("MongoDb Not Connected"))
     app.listen(3000);
 
 }

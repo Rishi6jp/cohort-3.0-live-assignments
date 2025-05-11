@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const JWT_ADMIN_SECRET = "adf98af6adifh*&8sd"
 
 function adminMiddlewear() {
     const token = req.headers.authorization
