@@ -142,21 +142,14 @@ adminRouter.put('/course',adminMiddleware,  async (req, res) => {
 adminRouter.delete('/course', (req, res) => {});
 
 adminRouter.get('/course/bulk', adminMiddleware, async (req, res) => {
-    const adminId = req.userId
+    const adminId = req.userId;
 
     const course = await CourseModel.find({
-        _id: courseId,
-        creatorId: adminId
-    },{
-        name: title, 
-        detail: description,
-        imageUrl: imageUrl,
-        price: price,
         creatorId: adminId
     })
 
     res.json({
-        message: "Course Updated",
+        message: "Course got",
         courseId: course._id
     })
 })
