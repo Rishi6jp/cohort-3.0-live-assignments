@@ -62,11 +62,7 @@ userRouter.post('/signin', async (req, res) => {
             email: email,
         })
 
-        if(!user){
-            return res.json({
-                message: "User not found"
-            })
-        }
+        r
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
