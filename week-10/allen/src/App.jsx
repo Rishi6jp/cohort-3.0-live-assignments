@@ -3,6 +3,9 @@ import './App.css'
 
 import {ArrowBigLeft, ArrowBigRight} from "lucide-react"
 
+import { ImageScroller } from './components/ImageScroller'
+import { Section4 } from './components/Section4'
+
 function App() {
 
   return (
@@ -12,6 +15,7 @@ function App() {
       <Section1/>
       <Section2/>
       <Section3/>
+      <Section4/>
     </>
   )
 }
@@ -163,34 +167,13 @@ function Section3() {
   return <div style={{backgroundColor: "#edf2fa", padding: "36px 0 36px 0", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}>
     <img width="1032px" src="https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1749106875/srbqdtqtkycswfvpfm3l.png?_upload_ref=ic_img_tool&__ar__=2.52" alt="" />
     <ImageScroller />
-  </div>
-
-}
-
-function ImageScroller() {
-  const Images = [
-    "https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1749111538/ny5dbzybmujirecsfgas.png?_upload_ref=ic_img_tool&__ar__=4.03",
-    "https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1747915776/f6zlpygi4yy0pfh1v5gh.png?_upload_ref=ic_img_tool&__ar__=4.03",
-    "https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1748271928/dzbmm4camyzhyryswhj6.png?_upload_ref=ic_img_tool&__ar__=4.03",
-    "https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1747735158/vegafglbrlqpyitn0lx2.png?_upload_ref=ic_img_tool&__ar__=4.03"
-  ]
-
-  const [imageIndex, setImageIndex] = useState(0);
-
-  return <div >
-    <div style={{width: "100%", height: "100%", display: "flex"}}>
-      {Images.map(url => (
-        <img width="1032px" src={url} key={url} alt="" style={{translate: `${-100* imageIndex}%`}} />
-      ))}
+    <div style={{marginTop: "48px", display: "flex", flexDirection: "column", alignContent: "center", justifyContent: "center", alignItems: "center"}}>
+      <h2>Meet Our 2024 Champions</h2>
+      <img width="1032px" src="https://res.cloudinary.com/dpzpn3dkw/image/upload/w_1600,f_avif,q_auto/v1748856353/hibbl78evc8dcj2ax0c3.png?_upload_ref=ic_img_tool&__ar__=3.38" alt="" />
     </div>
-    <button onClick={() => {
-      setImageIndex(c=> (c-1)%4)
-    }}><ArrowBigLeft/></button>
-    <button onClick={() => {
-      setImageIndex(c=> (c+1)%4)
-    }}><ArrowBigRight/></button>
   </div>
 
 }
+
 
 export default App
