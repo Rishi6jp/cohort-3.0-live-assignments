@@ -5,6 +5,8 @@ import {ArrowBigLeft, ArrowBigRight} from "lucide-react"
 
 import { ImageScroller } from './components/ImageScroller'
 import { Section4 } from './components/Section4'
+import { Section5 } from './components/Section5'
+import { Section6 } from './components/Section6'
 
 function App() {
 
@@ -16,6 +18,8 @@ function App() {
       <Section2/>
       <Section3/>
       <Section4/>
+      <Section5/>
+      <Section6/>
     </>
   )
 }
