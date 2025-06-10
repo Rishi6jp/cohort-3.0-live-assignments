@@ -1,0 +1,62 @@
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.heading{
+  width: 980px;
+  text-align: start;
+}
+
+h2 {
+  text-align: start;
+  margin-right: 20px;
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+
+.content {
+  display: flex;
+  gap: 100px;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  margin-bottom: 48px;
+}
+
+.content-text{
+  width: 380px;
+  
+}
+
+.content-img {
+  width: 500px;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title{
+  display: flex;
+  text-align: start;
+  justify-content: space-between;
+}
+
+.title button{
+  border: none;
+  background-color: white;
+}
+
+.explore-btn{
+  background-color: #0266da;
+  color: white;
+  border-radius: 25px;
+  border: none;
+  padding: 15px 25px 15px 25px;
+  font-size: 15px;
+  font-weight: bold;
+  margin: 36px 0;
+}

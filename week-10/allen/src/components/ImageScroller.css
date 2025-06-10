@@ -1,0 +1,36 @@
+.carosel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 48px;
+}
+
+.slide {
+   
+}
+
+.slide-hidden {
+    display: none
+}
+
+.indicators{
+    display: flex;
+}
+
+
+.indicator{
+    background-color: #1c1d1d;
+    width: .5rem;
+    height: .75rem;
+    border-radius: 100%;
+    border: none;
+    outline: none;
+    margin: 0 0.2rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+.indicator-inactive{
+    background-color: #c1c5cb;
+}
