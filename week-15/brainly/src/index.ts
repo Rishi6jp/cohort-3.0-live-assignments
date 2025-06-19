@@ -1,126 +1,162 @@
-import jwt from 'jsonwebtoken';
+import express from 'express';
+import jwt from "jsonwebtoken";
 import mongoose from 'mongoose';
-import { Content, User } from './db';
-import { userMiddleware } from './middleware';
-import z from 'zod'
-import bcrypt from 'bcrypt'
-import express, { Request, Response } from 'express';
-
+import crypto from 'crypto'
+import { ContentModel, LinkModel, TagModel, UserModel } from './db';
 import { JWT_PASSWORD } from './config';
-
+import { userMiddleware } from './middleware';
 const app = express();
 app.use(express.json());
+ 
 
-app.post('/api/v1/signup',async (req: Request, res: Response): Promise<void> => {
-    //Todo: zod validation, hash the password
-    const requireBody = z.object({
-        username: z.string().max(20).min(3 ),
-        password: z.string()
-            .max(20)
-            .min(8)
-            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/)
-    })
+app.post("/api/v1/signup",async (req, res) => {
+    //zod validation, hash the password
+    const username = req.body.username;
+    const password = req.body.password;
 
-    const passDataWithSuccess = requireBody.safeParse(req.body);
-    if(!passDataWithSuccess.success){
-        return res.status(400).json({
-            message: "Incorrect Formate",
-            error: passDataWithSuccess.error
+    try{
+
+        await UserModel.create({
+            username: username,
+            password: password
+        })
+
+        res.json({
+            message: "User Signed Up"
+        })
+    }catch(err){
+        console.log("error: " + err);
+        res.status(500).json({
+            message: "user already exist"
         })
     }
-    const {username, password} = passDataWithSuccess.data
+
+})
+
+app.post("/api/v1/signin", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.username;
     try{
-        const hashedPassword = await bcrypt.hash(password, 5);
-        await User.create({
-        username: username,
-        password: hashedPassword,
-        });
-        return res.json({
-            message : "User signed up"
-        });
+        const existingUser = await UserModel.findOne({
+            username
+        })
+        if(existingUser){
+            const token = jwt.sign({
+                id: existingUser._id
+            }, JWT_PASSWORD);
+            res.json({
+                token
+            })
+        }else{
+            res.status(403).json({
+                message: "Incorrect Credentials"
+            })
+        }
     }catch(e){
-        return res.status(411).json({
-            message: "User Already Exist"
+        console.log("Error: " + e);
+        res.json({
+            message: "wrong credentials"
         })
     }
 })
 
-app.post('/api/v1/signin', async (req: Request, res: Response): Promise<void> => {
-    const singinSchema = z.object({
-        username: z.string().max(20).min(3 ),
-        password: z.string()
-            .max(20)
-            .min(8)
-            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/)
-    })
-    const parsedSigninDataWithSuccess = singinSchema.safeParse(req.body)
-    if(!parsedSigninDataWithSuccess.success){
-        return res.status(400).json({
-            error: parsedSigninDataWithSuccess.error
-        })
-         
+app.post("/api/v1/content",userMiddleware,async (req, res) => {
+    const { title, link , type, tags } = req.body;
+
+    if(!title || !link || !type || !Array.isArray(tags)){
+        res.status(400).json({ message: "Missing Data"})
     }
 
-    const { username, password } = parsedSigninDataWithSuccess.data
-    
-    try{
-        const user = await User.findOne({ username })
-        if(!user){
-            return res.status(403).json({
-                message: "Invalid username or password"
-            })
-        }
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch){
-            return res.status(403).json({
-                message: "Invalid username or password"
-            })
-        }
-        const token = jwt.sign(
-           { id: user._id, username: user.username },
-           JWT_PASSWORD
-        )
-        return res.json({
-            message: "Signin successful",
-            token
-        })
-    }catch(err){
-        console.error("Signin error: ", err);
-        return res.status(500).json({
-            message: "Internal server error",
-        })
-    } 
-});
+    const tagIds = []
 
-app.post('/api/v1/content', userMiddleware ,async (req, res)=> {
-    const link = req.body.link;
-    const type = req.body.type;
-    await Content.create({
-        link: link,
-        type: type,
-        //@ts-ignore
+    for (const tagName of tags){
+        let tag = await TagModel.findOne({ title: tagName });
+
+        if(!tag){
+            tag = await TagModel.create({ title: tagName })
+        }
+
+        tagIds.push(tag._id);
+    }
+
+    await ContentModel.create({
+        link,
+        type,
+        title,
         userId: req.userId,
-        tags: []
+        tags: tagIds,
     })
 
     res.json({
         message: "Content added"
     })
-})
-
-app.get('/api/v1/content', (req, res)=> {
     
 })
 
-app.delete('/api/v1/content', (req, res)=> {
-    
+app.get("/api/v1/content", userMiddleware,async (req, res) => {
+    const userId = req.userId;
+    const content = await ContentModel.find({
+        userId: userId,
+    }).populate("userId", "username").populate("tags", "title")
+    res.json({
+        content
+    })
 })
 
-app.post('/api/v1/brain/share', (req, res) => {
+app.delete("/api/v1/content",userMiddleware, async (req, res) => {
+    const contentId = req.body.contentId;
+    await ContentModel.deleteOne({
+        userId: req.userId,
+        _id: contentId
+    })
 
+    res.json({
+        message: "Deleted"
+    })
 })
 
-app.get('/api/v1/brain/:sharelink', (req, res) => {
+app.post("/api/v1/brain/share",userMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const share = req.body.share;
+    if(share){
+        const hash = crypto.randomBytes(5).toString('hex');
+
+        await LinkModel.create({
+            hash,
+            userId,
+        })
+
+        res.json({
+            hash
+        })
+    } else {
+        res.status(400).json({
+            success: false,
+            message: "Missing 'share' content"
+        })
+    }
+})
+
+app.get("/api/v1/brain/:shareLink", async(req, res) => {
+    const shareLink = req.params.shareLink;
+
+    const brain = await LinkModel.findOne({
+        hash: shareLink
+    })
+
+    const content = await ContentModel.find({
+        userId: brain!.userId
+    }).populate("userId", "username").populate("tags", "title")
+
+    res.status(200).json({
+        username: (content[0].userId as any).username,
+        content: content.map((item)=>({
+            id: item._id,
+            link: item.link,
+            title: item.title,
+            tags: item.tags.map((tag: any)=>tag.title)
+        }))
+    })
 
 })
 

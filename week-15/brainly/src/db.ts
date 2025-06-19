@@ -1,38 +1,39 @@
-import mongoose, { mongo } from 'mongoose';
-
-import { Schema, model } from 'mongoose';
-import { ObjectId } from 'mongoose';
+import mongoose, { model, Schema } from "mongoose";
 
 mongoose.connect("mongodb+srv://rainbro187:test123@cluster0.zronawu.mongodb.net/")
+    .then(() => {
+        console.log("Mongodb Connected");
+    })
+    .catch((error) => {
+        console.log(`Mongodb Error: ${error}`);
+    })
 
-const ObjectId = Schema.ObjectId
-
-const userSchema = new Schema({
-    username: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-});
-
-const contentType = ["image", 'video', 'article', 'audio'];
-
-const contentSchema = new Schema({
-    link: {type: String, required: true},
-    type:{type: String, enum:contentType, requiered: true },
-    title:{type: String, required: true},
-    tags: {type:ObjectId, ref: 'Tag'},
-    userId:{type: ObjectId, ref: 'User'},
+const UserSchema = new Schema({
+    username: {type: String, unique: true, },
+    password: {type: String}
 })
 
-const tagsSchema = new Schema({
-    titel: {type: String, required: true, unique: true}
+export const UserModel =  model("User", UserSchema)
+
+const ContentSchema = new Schema({
+    title: String,
+    link: String,
+    type: {type: String, enum: ["image", 'video', 'audio', 'article'], required: true},
+    tags: [{type: mongoose.Types.ObjectId, ref: 'Tags'}],
+    userId: {type: mongoose.Types.ObjectId, ref: 'User', required: true}
 })
 
-const linkSchema = new Schema({
-    hash: {type: String, required: true}, 
-    userId: {type: ObjectId, ref: 'User'},
+export const ContentModel = model("Content",ContentSchema)
+
+const LinkSchema = new Schema({
+    hash: {type: String, required: true},
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 })
 
-export const User = model('User', userSchema);
-export const Content = model('Content', contentSchema);
-export const Tags = model('Tags', tagsSchema);
-export const Link = model('Link', linkSchema);
+export const LinkModel = model("Link", LinkSchema);
 
+const TagSchema = new Schema({
+    title: {type: String, required: true, unique: true}
+})
+
+export const TagModel = model("Tags", TagSchema)
