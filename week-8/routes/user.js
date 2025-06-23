@@ -62,7 +62,7 @@ userRouter.post('/signin', async (req, res) => {
             email: email,
         })
 
-        r
+ 
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
 

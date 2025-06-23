@@ -18,7 +18,7 @@ export const UserModel =  model("User", UserSchema)
 const ContentSchema = new Schema({
     title: String,
     link: String,
-    type: {type: String, enum: ["image", 'video', 'audio', 'article'], required: true},
+    type: {type: String, enum: ["twitter", 'youtube', 'audio', 'article'], required: true},
     tags: [{type: mongoose.Types.ObjectId, ref: 'Tags'}],
     userId: {type: mongoose.Types.ObjectId, ref: 'User', required: true}
 })
@@ -27,7 +27,7 @@ export const ContentModel = model("Content",ContentSchema)
 
 const LinkSchema = new Schema({
     hash: {type: String, required: true},
-    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true}
 })
 
 export const LinkModel = model("Link", LinkSchema);
